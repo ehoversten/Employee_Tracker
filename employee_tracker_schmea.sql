@@ -27,3 +27,15 @@ CREATE TABLE employees(
     FOREIGN KEY (role_id) REFERENCES roles(id) ON DELETE CASCADE,
     FOREIGN KEY (manager_id) REFERENCES employees(id) ON DELETE CASCADE
 );
+
+
+
+-- QUERY COMMANDS
+SELECT name AS Department, title, salary
+FROM departments, roles
+WHERE departments.id = roles.department_id;
+
+
+SELECT name AS Department, title, salary
+FROM departments
+    JOIN roles ON departments.id = roles.department_id;
