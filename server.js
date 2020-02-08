@@ -36,7 +36,13 @@ function start() {
               type: 'list',
               name: 'viewSelect',
               message: "What would you like to do?",
-              choices: ["View Departments", "View Roles", "View Employees", "Exit"]
+              choices: [
+                  "View Departments",
+                  "Add Department",
+                  "View Roles", 
+                  "View Employees", 
+                  "Exit"
+                ]
           }
         /* Pass your questions in here */
       ])
@@ -57,15 +63,15 @@ function processChoice(choice) {
     // Let our SWITCH statement direct our program flow
     switch (viewSelect) {
       case "View Departments":
-        console.log("finding departments");
         findDepartments();
         break;
+      case "Add Department":
+        addDepartments();
+        break;
       case "View Roles":
-        console.log("finding roles");
         findRoles();
         break;
       case "View Employees":
-        console.log("finding employees");
         findEmployees();
         break;
       case "Exit":
@@ -97,6 +103,28 @@ function findDepartments() {
     });
 }
 
+// ---------------------------------------- //
+//          Add A Department
+// ---------------------------------------- //
+function addDepartments() {
+    // Create another Inquirer Promise to query user for new Department Name
+    inquirer
+        .prompt(
+            [{
+                type: 'input',
+                message: "Name of the Department to add?",
+                name: "addDept"
+            }]
+        ).then(res => {
+            let { addDept } = res;
+            // Add New Department to our database
+            connection.query("INSERT INTO departments SET ?", { name: addDept }, function(err, res) {
+              if (err) throw err;
+              console.log(res.affectedRows + " department inserted!\n");
+              findDepartments();
+            });
+        });
+}
 
 // ---------------------------------------- //
 //          Find All Roles
