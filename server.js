@@ -43,6 +43,7 @@ function start() {
                   "View Roles", 
                   "Add Role", 
                   "View Employees", 
+                  "Add Employee", 
                   "Exit"
                 ]
           }
@@ -78,6 +79,9 @@ function processChoice(choice) {
       case "View Employees":
         findEmployees();
         break;
+      case "Add Employee":
+          addEmployees();
+          break;
       case "Exit":
         console.log("Goodbye...");
         endConnection();
@@ -191,7 +195,7 @@ function addRoles() {
 
 
 // ---------------------------------------- //
-//          Find All Employees
+//           Find All Employees
 // ---------------------------------------- //
 function findEmployees() {
     // Query our database for all employees
@@ -205,6 +209,51 @@ function findEmployees() {
       });
       // return data;
       start();
+    });
+}
+
+// ---------------------------------------- //
+//            Add An Employee
+// ---------------------------------------- //
+function addEmployees() {
+    inquirer
+        .prompt([
+            {
+                type: 'input',
+                message: "Enter first name of new employee",
+                name: 'first_name'
+            },
+            {
+                type: 'input',
+                message: "Enter last name of employee",
+                name: 'last_name'
+            },
+            {
+                type: 'input',
+                message: "Enter Role Identification Number",
+                name: 'roleId'
+            },
+            {
+                type: 'input',
+                message: "Enter Manager Identification Number",
+                name: 'managerId'
+            },
+    ]).then(res => {
+        // Create a new role OBJ from user inputs to pass to our mysql query
+        let newEmployee = {
+          first_name: res.first_name,
+          last_name: res.last_name,
+          role_id: parseInt(res.roleId),
+          manager_id: parseInt(res.managerId)
+        };
+
+        connection.query(
+          "INSERT INTO employees SET ?", newEmployee, (err, res) => {
+            if (err) throw err;
+            console.log(res.affectedRows + " employee inserted!\n");
+            findEmployees();
+          }
+        );
     });
 }
 
