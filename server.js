@@ -32,6 +32,7 @@ function start() {
 
     inquirer
       .prompt([
+          /* Pass your questions in here */
           {
               type: 'list',
               name: 'viewSelect',
@@ -40,11 +41,11 @@ function start() {
                   "View Departments",
                   "Add Department",
                   "View Roles", 
+                  "Add Role", 
                   "View Employees", 
                   "Exit"
                 ]
           }
-        /* Pass your questions in here */
       ])
       .then(answers => {
         // TEST that we are getting back what we expect from the USER
@@ -70,6 +71,9 @@ function processChoice(choice) {
         break;
       case "View Roles":
         findRoles();
+        break;
+      case "Add Role":
+        addRoles();
         break;
       case "View Employees":
         findEmployees();
@@ -144,6 +148,47 @@ function findRoles() {
       start();
     });
 }
+
+// ---------------------------------------- //
+//              Add A Role
+// ---------------------------------------- //
+function addRoles() {
+    inquirer
+        .prompt([
+            {
+                type: 'input',
+                message: "Title of role to add?",
+                name: 'roleTitle'
+            },
+            {
+                type: 'input',
+                message: "Salary of role?",
+                name: 'roleSalary'
+            },
+            {
+                type: 'input',
+                message: "Department Identification Number?",
+                name: 'roleDeptId'
+            },
+    ]).then(res => {
+        // Create a new role OBJ from user inputs to pass to our mysql query
+        let newRole = { 
+            title: res.roleTitle, 
+            salary: parseFloat(res.roleSalary), 
+            department_id: parseInt(res.roleDeptId) 
+        }
+        // console.log(newRole)
+
+        connection.query(
+          "INSERT INTO roles SET ?", newRole, (err, res) => {
+            if (err) throw err;
+            console.log(res.affectedRows + " role inserted!\n");
+            findRoles();
+          }
+        );
+    })
+}
+
 
 // ---------------------------------------- //
 //          Find All Employees

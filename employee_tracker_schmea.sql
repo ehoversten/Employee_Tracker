@@ -39,3 +39,8 @@ WHERE departments.id = roles.department_id;
 SELECT name AS Department, title, salary
 FROM departments
     JOIN roles ON departments.id = roles.department_id;
+
+SELECT first_name, last_name, title, salary
+FROM employees
+    JOIN roles ON employees.role_id = roles.id;
+
