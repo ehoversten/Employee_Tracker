@@ -125,6 +125,7 @@ function addDepartments() {
         connection.query("INSERT INTO departments SET ?", { name: addDept }, function(err, res) {
           if (err) throw err;
           console.log(res.affectedRows + " department inserted!\n");
+          // We added new data, let's call the display function
           findDepartments();
         });
       });
@@ -134,19 +135,27 @@ function addDepartments() {
 //          Find All Roles
 // ---------------------------------------- //
 function findRoles() {
-    console.log("in departments");
     // Query our database for all roles
-    connection.query("SELECT * FROM roles", (err, data) => {
-      if (err) throw err;
 
-    //   console.log(data);
-      data.map(result => {
-          console.log(`${result.id} | ${result.title} - ${result.salary}`)
-          console.log("-----------------------------------")
-      });
-      // return data;
-      start();
-    });
+    // *** This is a simple query with some ALIASES to better describe the data being displayed in the table
+    // connection.query(
+    //   "SELECT roles.id, title AS Title, departments.name AS Department, salary AS Compensation FROM roles",
+
+    // *** This is a more complex query that joins the department information as well. Copy this code over to mySql Workbench and break it down and if you need to look further in to INNER JOINS, LEFT/RIGHT JOINS
+    connection.query(
+      "SELECT roles.id, title AS Title, departments.name AS Department, salary AS Compensation FROM roles JOIN departments ON roles.department_id = departments.id",
+      (err, data) => {
+        if (err) throw err;
+
+        console.log("-------------------------");
+        // Using the console.table node package we can display our database query to the user
+        console.table(data);
+        console.log("-------------------------");
+
+        // Go back to prompt list
+        start();
+      }
+    );
 }
 
 // ---------------------------------------- //
