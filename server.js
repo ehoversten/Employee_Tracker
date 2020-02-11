@@ -1,5 +1,6 @@
 const mysql = require("mysql");
 const inquirer = require("inquirer");
+const cTable = require("console.table");
 const PORT = 3306;
 
 // create the connection information for the sql database
@@ -26,10 +27,7 @@ connection.connect(function(err) {
 });
 
 
-
 function start() {
-    console.log("Database Started and Connected Time to code!")
-
     inquirer
       .prompt([
           /* Pass your questions in here */
@@ -49,13 +47,9 @@ function start() {
                 ]
           }
       ])
-      .then(answers => {
-        // TEST that we are getting back what we expect from the USER
-        // console.log(answers);
-        // console.log(answers.viewSelect);
-
+      .then(result => {
         // Pass user selection object
-        processChoice(answers);
+        processChoice(result);
       });
 }
 
@@ -100,17 +94,15 @@ function processChoice(choice) {
 //          Find All Departments
 // ---------------------------------------- //
 function findDepartments() {
-    console.log("in departments");
     // Query our database for all departments
-    connection.query("SELECT * FROM departments", (err, data) => {
+    connection.query("SELECT departments.id, name AS Departments FROM departments", (err, data) => {
       if (err) throw err;
 
-    //   console.log(data);
-      data.map(result => {
-          console.log(`${result.id} | ${result.name}`)
-          console.log("-----------------------------------")
-      });
-      // return data;
+      console.log("-------------------------");
+      // Using the console.table node package we can display our database query to the user
+      console.table(data);
+      console.log("-------------------------");
+      // Head back to Main Prompt
       start();
     });
 }
