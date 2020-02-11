@@ -43,7 +43,8 @@ function start() {
                   "View Roles", 
                   "Add Role", 
                   "View Employees", 
-                  "Add Employee", 
+                  "Add Employee",
+                  "Update Employee Role",
                   "Exit"
                 ]
           }
@@ -80,8 +81,11 @@ function processChoice(choice) {
         findEmployees();
         break;
       case "Add Employee":
-          addEmployees();
-          break;
+        addEmployees();
+        break;
+      case "Update Employee Role":
+        updateRole();
+        break;
       case "Exit":
         console.log("Goodbye...");
         endConnection();
@@ -115,23 +119,23 @@ function findDepartments() {
 //          Add A Department
 // ---------------------------------------- //
 function addDepartments() {
-    // Create another Inquirer Promise to query user for new Department Name
-    inquirer
-        .prompt(
-            [{
-                type: 'input',
-                message: "Name of the Department to add?",
-                name: "addDept"
-            }]
-        ).then(res => {
-            let { addDept } = res;
-            // Add New Department to our database
-            connection.query("INSERT INTO departments SET ?", { name: addDept }, function(err, res) {
-              if (err) throw err;
-              console.log(res.affectedRows + " department inserted!\n");
-              findDepartments();
-            });
+  // Create another Inquirer Promise to query user for new Department Name
+  inquirer
+      .prompt(
+        [{
+          type: 'input',
+          message: "Name of the Department to add?",
+          name: "addDept"
+        }]
+      ).then(res => {
+        let { addDept } = res;
+        // Add New Department to our database
+        connection.query("INSERT INTO departments SET ?", { name: addDept }, function(err, res) {
+          if (err) throw err;
+          console.log(res.affectedRows + " department inserted!\n");
+          findDepartments();
         });
+      });
 }
 
 // ---------------------------------------- //
@@ -255,6 +259,38 @@ function addEmployees() {
           }
         );
     });
+}
+
+// ---------------------------------------- //
+//         Update Employee Role
+// ---------------------------------------- //
+function updateRole() {
+
+
+  inquirer
+    .prompt([
+      {
+        type: 'input',
+        name: 'empId',
+        message: 'Employee Identification Number to change?'
+      },
+      {
+        type: 'input',
+        name: 'roleId',
+        message: 'Now Role Identification Number?'
+      }
+    ]).then(result => {
+      console.log(result);
+      console.log(typeof result.empId, result.empId);
+      console.log(typeof result.roleId,result.roleId);
+
+      connection.query("SELECT * FROM employees SET ? WHERE ?", [data], (err, data) => {
+        if(err) throw err;
+
+        console.log(data);
+      })
+      start();
+    }).catch(err => { if(err) throw err; });
 }
 
 // ---------------------------------------- //

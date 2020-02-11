@@ -21,9 +21,9 @@ VALUES ("Program Manager", 120000.00, 1),
 
 INSERT INTO employees(first_name, last_name, role_id, manager_id)
 VALUES ("Bill", "Gibbons", 1, NULL),
-("Susan", "Thomas", 2, 5),
-("Rachel", "Smith", 3, 1),
+("Susan", "Thomas", 2, 1),
+("Rachel", "Smith", 3, NULL),
 ("Gabe", "Wilson", 4, 1),
 ("Amy", "Jacobs", 2, 1),
-("William", "Biggs", 5, 7),
+("William", "Biggs", 5, NULL),
 ("Bill", "Wallerson", 4, 5);

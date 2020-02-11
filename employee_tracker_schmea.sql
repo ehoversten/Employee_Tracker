@@ -23,7 +23,7 @@ CREATE TABLE employees(
     first_name VARCHAR(30) NOT NULL,
     last_name VARCHAR(30) NOT NULL,
     role_id INT NOT NULL,
-    manager_id INT,
+    manager_id INT DEFAULT NULL,
     FOREIGN KEY (role_id) REFERENCES roles(id) ON DELETE CASCADE,
     FOREIGN KEY (manager_id) REFERENCES employees(id) ON DELETE CASCADE
 );
@@ -40,7 +40,15 @@ SELECT name AS Department, title, salary
 FROM departments
     JOIN roles ON departments.id = roles.department_id;
 
+
 SELECT first_name, last_name, title, salary
 FROM employees
     JOIN roles ON employees.role_id = roles.id;
 
+
+SELECT first_name AS First, last_name AS Last, title AS Title , name AS Department, salary AS Compensation_yr
+FROM employees
+    JOIN roles ON employees.role_id = roles.id
+    JOIN departments ON roles.department_id = departments.id;
+
+    
