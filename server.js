@@ -280,16 +280,16 @@ function updateRole() {
         message: 'Now Role Identification Number?'
       }
     ]).then(result => {
-      console.log(result);
-      console.log(typeof result.empId, result.empId);
-      console.log(typeof result.roleId,result.roleId);
+      // Deconstruct the prompt result object
+      let { empId, roleId } = result;
 
-      connection.query("SELECT * FROM employees SET ? WHERE ?", [data], (err, data) => {
+      connection.query("UPDATE employees SET ? WHERE ?", [{ role_id: parseInt(roleId) }, { id: parseInt(empId) }], (err, data) => {
         if(err) throw err;
 
-        console.log(data);
+        // console.log(data);
+        console.log(data.affectedRows + " products updated!\n");
+        start();
       })
-      start();
     }).catch(err => { if(err) throw err; });
 }
 
