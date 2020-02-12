@@ -41,75 +41,78 @@ function start() {
             "Remove Department",
             "View Roles", 
             "Add Role", 
+            "Remove Role",
             "View Employees", 
             "Add Employee",
             "Update Employee Role",
             "Exit"
-          ]
+        ]
       }
-    ])
-    .then(result => {
+    ]).then(result => {
       // Pass user selection object
       processChoice(result);
     });
 }
 
 function processChoice(choice) {
-    // Using ES6 syntax we DECONSTRUCT the variable from the object passed in
-    let { viewSelect } = choice;
+  // Using ES6 syntax we DECONSTRUCT the variable from the object passed in
+  let { viewSelect } = choice;
 
-    // Let our SWITCH statement direct our program flow
-    switch (viewSelect) {
-      case "View Departments":
-        findDepartments();
-        break;
-      case "Add Department":
-        addDepartments();
-        break;
-      case "Remove Department":
-        deleteDept();
-        break;
-      case "View Roles":
-        findRoles();
-        break;
-      case "Add Role":
-        addRoles();
-        break;
-      case "View Employees":
-        findEmployees();
-        break;
-      case "Add Employee":
-        addEmployees();
-        break;
-      case "Update Employee Role":
-        updateRole();
-        break;
-      case "Exit":
-        console.log("Goodbye...");
-        endConnection();
-        break;
-      default:
-        console.log("Please make a selection");
-        start();
-    }
+  // Let our SWITCH statement direct our program flow
+  switch (viewSelect) {
+    case "View Departments":
+      findDepartments();
+      break;
+    case "Add Department":
+      addDepartments();
+      break;
+    case "Remove Department":
+      deleteDept();
+      break;
+    case "View Roles":
+      findRoles();
+      break;
+    case "Add Role":
+      addRoles();
+      break;
+    case 'Remove Role':
+      removeRole();
+      break;
+    case "View Employees":
+      findEmployees();
+      break;
+    case "Add Employee":
+      addEmployees();
+      break;
+    case "Update Employee Role":
+      updateRole();
+      break;
+    case "Exit":
+      console.log("Goodbye...");
+      endConnection();
+      break;
+    default:
+      console.log("Please make a selection");
+      start();
+  }
 }
 
 // ---------------------------------------- //
 //          Find All Departments
 // ---------------------------------------- //
 function findDepartments() {
-    // Query our database for all departments
-    connection.query("SELECT departments.id, name AS Departments FROM departments", (err, data) => {
-      if (err) throw err;
+  // Query our database for all departments
+  connection.query("SELECT departments.id, name AS Departments FROM departments", (err, data) => {
+    if (err) throw err;
 
-      console.log("-------------------------");
-      // Using the console.table node package we can display our database query to the user
-      console.table(data);
-      console.log("-------------------------");
+    console.log("-------------------------");
+    // Using the console.table node package we can display our database query to the user
+    console.table(data);
+    console.log("-------------------------");
 
-      // Head back to Main Prompt
-      start();
-    });
+    // Head back to Main Prompt
+    start();
+  });
 }
 
 // ---------------------------------------- //
@@ -244,6 +247,12 @@ function addRoles() {
   })
 }
 
+// ---------------------------------------- //
+//             Remove A Role
+// ---------------------------------------- //
+function removeRole() {
+  console.log("Removing Role")
+}
 
 // ---------------------------------------- //
 //           Find All Employees
