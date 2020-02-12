@@ -28,29 +28,30 @@ connection.connect(function(err) {
 
 
 function start() {
-    inquirer
-      .prompt([
-          /* Pass your questions in here */
-          {
-              type: 'list',
-              name: 'viewSelect',
-              message: "What would you like to do?",
-              choices: [
-                  "View Departments",
-                  "Add Department",
-                  "View Roles", 
-                  "Add Role", 
-                  "View Employees", 
-                  "Add Employee",
-                  "Update Employee Role",
-                  "Exit"
-                ]
-          }
-      ])
-      .then(result => {
-        // Pass user selection object
-        processChoice(result);
-      });
+  inquirer
+    .prompt([
+      /* Pass your questions in here */
+      {
+        type: 'list',
+        name: 'viewSelect',
+        message: "What would you like to do?",
+        choices: [
+            "View Departments",
+            "Add Department",
+            "Remove Department",
+            "View Roles", 
+            "Add Role", 
+            "View Employees", 
+            "Add Employee",
+            "Update Employee Role",
+            "Exit"
+          ]
+      }
+    ])
+    .then(result => {
+      // Pass user selection object
+      processChoice(result);
+    });
 }
 
 function processChoice(choice) {
@@ -64,6 +65,9 @@ function processChoice(choice) {
         break;
       case "Add Department":
         addDepartments();
+        break;
+      case "Remove Department":
+        deleteDept();
         break;
       case "View Roles":
         findRoles();
@@ -102,6 +106,7 @@ function findDepartments() {
       // Using the console.table node package we can display our database query to the user
       console.table(data);
       console.log("-------------------------");
+
       // Head back to Main Prompt
       start();
     });
@@ -111,6 +116,9 @@ function findDepartments() {
 //          Add A Department
 // ---------------------------------------- //
 function addDepartments() {
+
+  // findDepartments();
+
   // Create another Inquirer Promise to query user for new Department Name
   inquirer
       .prompt(
@@ -127,8 +135,43 @@ function addDepartments() {
           console.log(res.affectedRows + " department inserted!\n");
           // We added new data, let's call the display function
           findDepartments();
+          // start();
         });
       });
+}
+
+// ---------------------------------------- //
+//          Delete A Department
+// ---------------------------------------- //
+function deleteDept() {
+  // Display list of departments for user to reference
+  findDepartments();
+
+  // Prompt for which record to remove
+  inquirer
+    .prompt([
+      {
+        type: 'input',
+        name: 'del_id',
+        message: "Enter the Identification Number of the department to remove"
+      }
+    ]).then(res => {
+      // create an object to pass to the query
+      let rmvDept = {
+        id: parseInt(res.del_id)
+      };
+    
+      // Send query to database
+      connection.query("DELETE FROM departments WHERE ?", rmvDept, (err, res) => {
+        if(err) throw err;
+        console.log(res.affectedRows + " department removed!");
+        findDepartments();
+        // start();
+      });
+    })
+    .catch(err => {
+      if(err) throw err;
+    });
 }
 
 // ---------------------------------------- //
@@ -162,40 +205,43 @@ function findRoles() {
 //              Add A Role
 // ---------------------------------------- //
 function addRoles() {
-    inquirer
-        .prompt([
-            {
-                type: 'input',
-                message: "Title of role to add?",
-                name: 'roleTitle'
-            },
-            {
-                type: 'input',
-                message: "Salary of role?",
-                name: 'roleSalary'
-            },
-            {
-                type: 'input',
-                message: "Department Identification Number?",
-                name: 'roleDeptId'
-            },
+  inquirer
+    .prompt([
+      {
+          type: 'input',
+          message: "Title of role to add?",
+          name: 'roleTitle'
+      },
+      {
+          type: 'input',
+          message: "Salary of role?",
+          name: 'roleSalary'
+      },
+      {
+          type: 'input',
+          message: "Department Identification Number?",
+          name: 'roleDeptId'
+      },
     ]).then(res => {
-        // Create a new role OBJ from user inputs to pass to our mysql query
-        let newRole = { 
-            title: res.roleTitle, 
-            salary: parseFloat(res.roleSalary), 
-            department_id: parseInt(res.roleDeptId) 
-        }
-        // console.log(newRole)
+      // Create a new role OBJ from user inputs to pass to our mysql query
+      let newRole = { 
+          title: res.roleTitle, 
+          salary: parseFloat(res.roleSalary), 
+          department_id: parseInt(res.roleDeptId) 
+      }
 
-        connection.query(
-          "INSERT INTO roles SET ?", newRole, (err, res) => {
-            if (err) throw err;
-            console.log(res.affectedRows + " role inserted!\n");
-            findRoles();
-          }
-        );
-    })
+      connection.query(
+        // Here we use the mysql helper functionality and pass in an OBJECT as the DATA argument to the function
+        "INSERT INTO roles SET ?", newRole, (err, res) => {
+          // If there is an error, alert
+          if (err) throw err;
+          // On success
+          console.log(res.affectedRows + " role inserted!\n");
+          // Let's Display that new data
+          findRoles();
+        }
+      );
+  })
 }
 
 
@@ -204,15 +250,20 @@ function addRoles() {
 // ---------------------------------------- //
 function findEmployees() {
     // Query our database for all employees
-    connection.query("SELECT * FROM employees", (err, data) => {
+
+    // *** This is a simple query with some ALIASES to better describe the data being displayed in the table
+    // connection.query("SELECT employees.id, first_name AS First, last_name AS Last, role_id AS Position FROM employees", (err, data) => {
+
+
+    // *** This is a more complex query that joins the department information as well. Copy this code over to mySql Workbench and break it down and if you need to look further in to INNER JOINS, LEFT/RIGHT JOINS
+    connection.query("SELECT first_name AS First, last_name AS Last, title AS Title , name AS Department, salary AS Compensation_yr FROM employees JOIN roles ON employees.role_id = roles.id JOIN departments ON roles.department_id = departments.id;", (err, data) => {
       if (err) throw err;
 
-    //   console.log(data);
-      data.map(result => {
-          console.log(`${result.id} | ${result.first_name} ${result.last_name}`)
-          console.log("-----------------------------------")
-      });
-      // return data;
+      console.log("-------------------------");
+      // Using the console.table node package we can display our database query to the user
+      console.table(data);
+      console.log("-------------------------");
+      // Go back to main prompt
       start();
     });
 }
@@ -221,44 +272,48 @@ function findEmployees() {
 //            Add An Employee
 // ---------------------------------------- //
 function addEmployees() {
-    inquirer
-        .prompt([
-            {
-                type: 'input',
-                message: "Enter first name of new employee",
-                name: 'first_name'
-            },
-            {
-                type: 'input',
-                message: "Enter last name of employee",
-                name: 'last_name'
-            },
-            {
-                type: 'input',
-                message: "Enter Role Identification Number",
-                name: 'roleId'
-            },
-            {
-                type: 'input',
-                message: "Enter Manager Identification Number",
-                name: 'managerId'
-            },
+  inquirer
+    .prompt([
+      {
+          type: 'input',
+          message: "Enter first name of new employee",
+          name: 'first_name'
+      },
+      {
+          type: 'input',
+          message: "Enter last name of employee",
+          name: 'last_name'
+      },
+      {
+          type: 'input',
+          message: "Enter Role Identification Number",
+          name: 'roleId'
+      },
+      {
+          type: 'input',
+          message: "Enter Manager Identification Number",
+          name: 'managerId'
+      },
     ]).then(res => {
-        // Create a new role OBJ from user inputs to pass to our mysql query
-        let newEmployee = {
-          first_name: res.first_name,
-          last_name: res.last_name,
-          role_id: parseInt(res.roleId),
-          manager_id: parseInt(res.managerId)
-        };
+      // Create a new role OBJ from user inputs to pass to our mysql query
+      let newEmployee = {
+        first_name: res.first_name,
+        last_name: res.last_name,
+        role_id: parseInt(res.roleId),
+        manager_id: parseInt(res.managerId)
+      };
 
-        connection.query(
-          "INSERT INTO employees SET ?", newEmployee, (err, res) => {
-            if (err) throw err;
-            console.log(res.affectedRows + " employee inserted!\n");
-            findEmployees();
-          }
-        );
+      // Here we use the mysql helper functionality and pass in an OBJECT as the DATA argument to the function
+      connection.query(
+        "INSERT INTO employees SET ?", newEmployee, (err, res) => {
+          // IF error, log it
+          if (err) throw err;
+          // If successful, let them know
+          console.log(res.affectedRows + " employee inserted!\n");
+          // Display updated data
+          findEmployees();
+        }
+      );
     });
 }
 
@@ -266,8 +321,6 @@ function addEmployees() {
 //         Update Employee Role
 // ---------------------------------------- //
 function updateRole() {
-
-
   inquirer
     .prompt([
       {
