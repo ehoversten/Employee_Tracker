@@ -45,6 +45,7 @@ function start() {
             "View Employees", 
             "Add Employee",
             "Update Employee Role",
+            "Remove Employee",
             "Exit"
         ]
       }
@@ -86,6 +87,9 @@ function processChoice(choice) {
       break;
     case "Update Employee Role":
       updateRole();
+      break;
+    case "Remove Employee":
+      removeEmployee();
       break;
     case "Exit":
       console.log("Goodbye...");
@@ -144,7 +148,7 @@ function addDepartments() {
 }
 
 // ---------------------------------------- //
-//          Delete A Department
+//          Remove A Department
 // ---------------------------------------- //
 function deleteDept() {
   // Display list of departments for user to reference
@@ -178,7 +182,7 @@ function deleteDept() {
 }
 
 // ---------------------------------------- //
-//          Find All Roles
+//            Find All Roles
 // ---------------------------------------- //
 function findRoles() {
     // Query our database for all roles
@@ -284,7 +288,7 @@ function findEmployees() {
 
 
     // *** This is a more complex query that joins the department information as well. Copy this code over to mySql Workbench and break it down and if you need to look further in to INNER JOINS, LEFT/RIGHT JOINS
-    connection.query("SELECT first_name AS First, last_name AS Last, title AS Title , name AS Department, salary AS Compensation_yr FROM employees JOIN roles ON employees.role_id = roles.id JOIN departments ON roles.department_id = departments.id;", (err, data) => {
+    connection.query("SELECT employees.id, first_name AS First, last_name AS Last, title AS Title , name AS Department, salary AS Compensation_yr FROM employees JOIN roles ON employees.role_id = roles.id JOIN departments ON roles.department_id = departments.id;", (err, data) => {
       if (err) throw err;
 
       console.log("-------------------------");
@@ -297,7 +301,7 @@ function findEmployees() {
 }
 
 // ---------------------------------------- //
-//            Add An Employee
+//           Add An Employee
 // ---------------------------------------- //
 function addEmployees() {
   inquirer
@@ -376,10 +380,32 @@ function updateRole() {
 }
 
 // ---------------------------------------- //
+//           Remove an Employee
+// ---------------------------------------- //
+function removeEmployee() {
+  inquirer
+    .prompt([
+      {
+        type: 'input',
+        name: 'rmvEmployee',
+        message: "What is the Employee Identification Number to remove?"
+      }
+    ]).then(result => {
+      console.log(result);
+      let { rmvEmployee } = result;
+      connection.query("DELETE FROM employees WHERE ?", { id: parseInt(rmvEmployee) }, (err, res) => {
+        if (err) throw err;
+        console.log(res.affectedRows + " employee removed!\n");
+        start();
+      });
+    })
+    .catch(err => { if (err) throw err; });
+}
+
+// ---------------------------------------- //
 //    Exit Program End Database Connection
 // ---------------------------------------- //
 function endConnection() {
     console.log("Disconnecting Database");
     connection.end();
 }
-
