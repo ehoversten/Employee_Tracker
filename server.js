@@ -251,8 +251,27 @@ function addRoles() {
 //             Remove A Role
 // ---------------------------------------- //
 function removeRole() {
-  console.log("Removing Role")
+  console.log("Removing Role");
+
+  inquirer
+    .prompt([
+      {
+        type: 'input',
+        name: 'rmvRole',
+        message: "What Role would you like to remove?"
+      }
+    ]).then(result => {
+      console.log(result);
+      let { rmvRole } = result;
+      connection.query("DELETE FROM roles WHERE ?", { id: parseInt(rmvRole) }, (err, res) => {
+        if(err) throw err;
+        console.log(res.affectedRows + " role removed!\n");
+        start();
+      });
+    })
+    .catch(err => { if(err) throw err;});
 }
+
 
 // ---------------------------------------- //
 //           Find All Employees
