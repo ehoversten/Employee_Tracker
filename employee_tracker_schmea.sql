@@ -46,9 +46,15 @@ FROM employees
     JOIN roles ON employees.role_id = roles.id;
 
 
-SELECT first_name AS First, last_name AS Last, title AS Title , name AS Department, salary AS Compensation_yr
+-- Find all Employees include Role and  Department
+SELECT employees.id, first_name AS First, last_name AS Last, title AS Title, name AS Department, salary AS Salary
 FROM employees
     JOIN roles ON employees.role_id = roles.id
     JOIN departments ON roles.department_id = departments.id;
 
-    
+-- Find all Employees by Department
+SELECT departments.id, name AS Department, title AS Title, first_name AS First, last_name AS Last
+FROM departments
+    JOIN roles ON departments.id = roles.department_id
+    JOIN employees ON roles.id = employees.role_id
+WHERE departments.name = 'Developer';
