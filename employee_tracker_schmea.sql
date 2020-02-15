@@ -31,19 +31,26 @@ CREATE TABLE employees(
 
 
 -- QUERY COMMANDS
-SELECT name AS Department, title, salary
+
+-- View Titles and Salay by Department (Sort Highest to Lowest)
+SELECT name AS Department, title AS 'Job Title', salary AS Salary
 FROM departments, roles
-WHERE departments.id = roles.department_id;
+WHERE departments.id = roles.department_id
+ORDER BY salary DESC;
 
 
+-- Same query as above only using JOINS (Sorted by Department name and then highest to lowest by salary)
 SELECT name AS Department, title, salary
 FROM departments
-    JOIN roles ON departments.id = roles.department_id;
+    JOIN roles ON departments.id = roles.department_id
+ORDER BY name, roles.salary DESC;
 
 
-SELECT first_name, last_name, title, salary
+-- View All Employees By Manager
+SELECT employees.id, first_name AS First, last_name AS Last
 FROM employees
-    JOIN roles ON employees.role_id = roles.id;
+WHERE manager_id = 1;
+
 
 
 -- Find all Employees include Role and  Department
@@ -52,9 +59,12 @@ FROM employees
     JOIN roles ON employees.role_id = roles.id
     JOIN departments ON roles.department_id = departments.id;
 
+
+
 -- Find all Employees by Department
 SELECT departments.id, name AS Department, title AS Title, first_name AS First, last_name AS Last
 FROM departments
     JOIN roles ON departments.id = roles.department_id
     JOIN employees ON roles.id = employees.role_id
 WHERE departments.name = 'Developer';
+
