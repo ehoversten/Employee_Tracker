@@ -103,10 +103,10 @@ function findDepartments() {
   connection.query("SELECT departments.id, name AS Departments FROM departments", (err, data) => {
     if (err) throw err;
 
-    console.log("-------------------------");
+    console.log("-------------------------\n");
     // Using the console.table node package we can display our database query to the user
     console.table(data);
-    console.log("-------------------------");
+    console.log("-------------------------\n");
 
     // Back to Main Prompt
     start();
@@ -187,14 +187,14 @@ function findRoles() {
 
     // *** This is a more complex query that joins the department information as well. Copy this code over to mySql Workbench and break it down and if you need to look further in to INNER JOINS, LEFT/RIGHT JOINS
     connection.query(
-      "SELECT roles.id, title AS Title, departments.name AS Department, salary AS Compensation FROM roles JOIN departments ON roles.department_id = departments.id",
+      "SELECT roles.id, title AS Title, departments.name AS Department, salary AS Compensation FROM roles JOIN departments ON roles.department_id = departments.id ORDER BY departments.name, roles.salary DESC",
       (err, data) => {
         if (err) throw err;
 
-        console.log("-------------------------");
+        console.log("-------------------------\n");
         // Using the console.table node package we can display our database query to the user
         console.table(data);
-        console.log("-------------------------");
+        console.log("-------------------------\n");
 
         // Go back to prompt list
         start();
@@ -282,16 +282,19 @@ function findEmployees() {
 
 
     // *** This is a more complex query that joins the department information as well. Copy this code over to mySql Workbench and break it down and if you need to look further in to INNER JOINS, LEFT/RIGHT JOINS
-    connection.query("SELECT employees.id, first_name AS First, last_name AS Last, title AS Title , name AS Department, salary AS Compensation_yr FROM employees JOIN roles ON employees.role_id = roles.id JOIN departments ON roles.department_id = departments.id;", (err, data) => {
-      if (err) throw err;
+    connection.query(
+      "SELECT employees.id, employees.first_name AS First, employees.last_name AS Last, roles.title AS Title, departments.name AS Department, CONCAT(manager.first_name, ' ', manager.last_name) AS 'Direct Manager', roles.salary AS Salary FROM employees JOIN roles ON employees.role_id = roles.id JOIN departments ON roles.department_id = departments.id JOIN employees manager ON manager.id = employees.manager_id;",
+      (err, data) => {
+        if (err) throw err;
 
-      console.log("-------------------------");
-      // Using the console.table node package we can display our database query to the user
-      console.table(data);
-      console.log("-------------------------");
-      // Go back to main prompt
-      start();
-    });
+        console.log("-------------------------\n");
+        // Using the console.table node package we can display our database query to the user
+        console.table(data);
+        console.log("-------------------------\n");
+        // Go back to main prompt
+        start();
+      }
+    );
 }
 
 // ---------------------------------------- //
