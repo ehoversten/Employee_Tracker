@@ -133,7 +133,6 @@ function addDepartments() {
           console.log(res.affectedRows + " department inserted!\n");
           // We added new data, let's call the display function
           findDepartments();
-          // start();
         });
       });
 }
@@ -169,7 +168,6 @@ async function deleteDept() {
         if(err) throw err;
         console.log(res.affectedRows + " department removed!");
         findDepartments();
-        // start();
       });
     })
     .catch(err => {
