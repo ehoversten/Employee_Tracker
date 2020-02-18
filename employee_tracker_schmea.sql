@@ -38,12 +38,12 @@ FROM departments, roles
 WHERE departments.id = roles.department_id
 ORDER BY salary DESC;
 
-
 -- Same query as above only using JOINS (Sorted by Department name and then highest to lowest by salary)
 SELECT name AS Department, title, salary
 FROM departments
     JOIN roles ON departments.id = roles.department_id
 ORDER BY name, roles.salary DESC;
+
 
 
 -- View All Employees By Manager
@@ -68,3 +68,13 @@ FROM departments
     JOIN employees ON roles.id = employees.role_id
 WHERE departments.name = 'Developer';
 
+-- Update Employee Manager
+
+
+
+
+SELECT employees.id, employees.first_name AS First, employees.last_name AS Last, roles.title AS Title, departments.name AS Department, roles.salary AS Salary, CONCAT(manager.first_name, ' ', manager.last_name) AS 'Direct Manager'
+FROM employees
+    JOIN roles ON employees.role_id = roles.id
+    JOIN departments ON roles.department_id = departments.id
+    JOIN employees manager ON manager.id = employees.manager_id;

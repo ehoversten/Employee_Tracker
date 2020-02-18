@@ -4,17 +4,11 @@ const cTable = require("console.table");
 require("dotenv").config();
 const PORT = process.env.PORT;
 
-// create the connection information for the sql database
+// Create connection information for the sql database
 var connection = mysql.createConnection({
   host: process.env.MYSQL_HOST,
-
-  // Your port; if not 3306
   port: PORT,
-
-  // Your username
   user: process.env.MYSQL_USER,
-
-  // Your password
   password: process.env.MYSQL_PASS,
   database: process.env.MYSQL_DB
 });
@@ -31,7 +25,6 @@ connection.connect(function(err) {
 function start() {
   inquirer
     .prompt([
-      /* Pass your questions in here */
       {
         type: 'list',
         name: 'viewSelect',
@@ -115,7 +108,7 @@ function findDepartments() {
     console.table(data);
     console.log("-------------------------");
 
-    // Head back to Main Prompt
+    // Back to Main Prompt
     start();
   });
 }
@@ -124,9 +117,6 @@ function findDepartments() {
 //          Add A Department
 // ---------------------------------------- //
 function addDepartments() {
-
-  // findDepartments();
-
   // Create another Inquirer Promise to query user for new Department Name
   inquirer
       .prompt(
@@ -151,12 +141,17 @@ function addDepartments() {
 // ---------------------------------------- //
 //          Remove A Department
 // ---------------------------------------- //
-function deleteDept() {
-  // Display list of departments for user to reference
-  findDepartments();
+async function deleteDept() {
+  // Create a variable to hold our data
+
+  await connection.query("SELECT * FROM departments", function(err, data) {
+      if(err) throw err;
+      console.table(data);
+    });
+
 
   // Prompt for which record to remove
-  inquirer
+  await inquirer
     .prompt([
       {
         type: 'input',
@@ -409,4 +404,5 @@ function removeEmployee() {
 function endConnection() {
     console.log("Disconnecting Database");
     connection.end();
+    process.exit();
 }
