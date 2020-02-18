@@ -3,6 +3,22 @@ const inquirer = require("inquirer");
 const cTable = require("console.table");
 require("dotenv").config();
 const PORT = process.env.PORT;
+const logo = require("asciiart-logo");
+
+
+// Configure Ascii-Art package
+let directions = 'Employee Tracker is a Node based Command Line Interface(CLI) backed by a mysql database. Follow the prompts to View all Departments, Roles and Employees. You can add or remove departments, roles and employees as well as update employees roles.'
+
+console.log(logo({ 
+  name: "Employee Tracker",
+  logoColor: "bold-green",
+  textColor: "goldenrod"
+  })
+  .right('Version 1.0.0')
+  .emptyLine()
+  .center(directions)
+  .render()
+);
 
 // Create connection information for the sql database
 var connection = mysql.createConnection({
@@ -16,7 +32,7 @@ var connection = mysql.createConnection({
 // connect to the mysql server and sql database
 connection.connect(function(err) {
   if (err) throw err;
-  console.log(`Database Connected on ${PORT}`)
+  // console.log(`Database Connected on ${PORT}`)
   // run the start function after the connection is made to prompt the user
   start();
 });
@@ -86,7 +102,7 @@ function processChoice(choice) {
       removeEmployee();
       break;
     case "Exit":
-      console.log("Goodbye...");
+      console.log("\nGoodbye...\n");
       endConnection();
       break;
     default:
@@ -403,7 +419,7 @@ function removeEmployee() {
 //    Exit Program End Database Connection
 // ---------------------------------------- //
 function endConnection() {
-    console.log("Disconnecting Database");
+    // console.log("Disconnecting Database");
     connection.end();
     process.exit();
 }
