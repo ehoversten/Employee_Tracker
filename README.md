@@ -42,7 +42,15 @@ The User has the ability to perform the following actions:
 
 ## Usage:
 
-![Description of Image](./path/to/image_file.png)
+![Program Start](./assets/img/logo.png)
+
+![View Departments](./assets/img/departments.png)
+
+![View Roles](./assets/img/roles.png)
+
+![View Employees](./assets/img/employees.png)
+
+![Add Department](./assets/img/add.png)
 
 &nbsp;
 
