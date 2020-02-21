@@ -44,7 +44,28 @@ The User has the ability to perform the following actions:
 
 ![Description of Image](./path/to/image_file.png)
 
+&nbsp;
+
 ## Instructions:
+
+####  How to download and play with application:
+
+```javascript
+// Clone a local copy to your machine
+$> git clone https://github.com/ehoversten/.git
+
+// Change directories into the new project
+$> cd 
+
+// Install required libraries and dependencies
+$> npm install
+
+// Run the server.js file
+$> node server.js
+
+```
+
+#### Follow the prompts, use the up/down arrow keys to make selections, Enjoy!!!
 
 
 &nbsp;
