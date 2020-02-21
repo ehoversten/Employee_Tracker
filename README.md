@@ -60,6 +60,24 @@ $> cd
 // Install required libraries and dependencies
 $> npm install
 
+// Create a MySQL Database on your local machine to connect to program
+- Using your preferred MySQL program interface copy and paste the code from the `schema.sql` file and create the database and table schema.
+
+- Once the database is created you can add data using the `seeds.sql` file
+
+- You may need to configure the database connection to match your local settings, edit the values contained between the `< >` in the `server.js` file as needed.
+
+// Database Configuration
+const connection = mysql.createConnection({
+    host: `<MYSQL_HOST>`,
+    port: `<PORT>`,
+    user: `<MYSQL_USER>`,
+    password: `<MYSQL_PASS>`,
+    database: 'employee_tracker'
+});
+
+- Save the `server.js` file 
+
 // Run the server.js file
 $> node server.js
 
