@@ -60,10 +60,10 @@ The User has the ability to perform the following actions:
 
 ```javascript
 // Clone a local copy to your machine
-$> git clone https://github.com/ehoversten/.git
+$> git clone https://github.com/ehoversten/Employee_Tracker.git
 
 // Change directories into the new project
-$> cd 
+$> cd Employee_Tracker
 
 // Install required libraries and dependencies
 $> npm install
